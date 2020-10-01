@@ -1,0 +1,28 @@
+{
+  "name": "node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "run nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pa30P42/node.js.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Pa30P42/node.js/issues"
+  },
+  "homepage": "https://github.com/Pa30P42/node.js#readme",
+  "dependencies": {
+    "uuid": "^8.3.0",
+    "yargs": "^16.0.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}
