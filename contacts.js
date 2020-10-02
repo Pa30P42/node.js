@@ -1,4 +1,4 @@
-// import { v4 as uuidv4 } from "uuid";npm
+const { v4: uuidv4 } = require("uuid");
 const fs = require("fs");
 const path = require("path");
 
@@ -35,10 +35,12 @@ async function addContact(name, email, phone) {
   try {
     const contactsList = await listContacts();
     const id = uuidv4();
+    const newContact = { id, name, email, phone };
     await fsPromise.writeFile(
       contactsPath,
-      JSON.stringify([...contactsList], { id, name, email, phone })
+      JSON.stringify([...contactsList, newContact])
     );
+    console.log(newContact);
   } catch (err) {
     console.log(err);
   }

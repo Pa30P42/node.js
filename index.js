@@ -9,15 +9,15 @@ async function invokeAction({ action, id, name, email, phone }) {
       break;
 
     case "get":
-      // ... id
+      console.log(await contacts.getContactById(id));
       break;
 
     case "add":
-      // ... name email phone
+      console.log(await contacts.addContact(name, email, phone));
       break;
 
     case "remove":
-      // ... id
+      console.log(await contacts.removeContact(id));
       break;
 
     default:
