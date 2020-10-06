@@ -16,6 +16,7 @@ async function getContactById(contactId) {
     return contactsList.find((contact) => contact.id === contactId);
   } catch (err) {
     console.log(err);
+    process.exit(1);
   }
 }
 
@@ -28,6 +29,7 @@ async function removeContact(contactId) {
     await fsPromise.writeFile(contactsPath, JSON.stringify(filteredList));
   } catch (err) {
     console.log(err);
+    process.exit(1);
   }
 }
 
@@ -43,6 +45,7 @@ async function addContact(name, email, phone) {
     console.log(newContact);
   } catch (err) {
     console.log(err);
+    process.exit(1);
   }
   // ...твой код, uuidv4
 }
