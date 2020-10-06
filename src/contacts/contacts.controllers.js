@@ -1,26 +1,29 @@
 const contacts = require("../../contacts");
-const fs = require("fs");
-const path = require("path");
+// const fs = require("fs");
+// const path = require("path");
 
-const contactsPath = path.join(__dirname, "../../db/contacts.json");
+// const contactsPath = path.join(__dirname, "../../db/contacts.json");
 
 exports.getContacts = async (req, res, next) => {
   res.status(200).send(await contacts.listContacts());
 };
 
-exports.addContacts = async (req, res, next) => {
-  try {
-    const contactsList = await listContacts();
-    const id = uuidv4();
-    const newContact = { id, name, email, phone };
-    await fsPromise.writeFile(
-      contactsPath,
-      JSON.stringify([...contactsList, newContact])
-    );
-    res.status(200);
-  } catch (err) {
-    console.log(err);
+exports.getContactsById = async (req, res, next) => {
+  const { id } = req.params;
+
+  const contact = await contacts.getContactById(id);
+
+  if (!contact) {
+    return res.status(404).send("Contact not found");
   }
+
+  return res.status(200).send(contact);
+};
+
+exports.addContacts = async (req, res, next) => {
+  const newContact = await contacts.addContact(req.body);
+  console.log("newContact", newContact);
+  res.status(201).send(newContact);
 };
 
 // module.exports = class ContactsController {

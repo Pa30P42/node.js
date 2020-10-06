@@ -2,7 +2,7 @@ const express = require("express");
 const path = require("path");
 const cors = require("cors");
 const contactsRouter = require("../contacts/contacts.routers");
-
+// require("dotenv").config({ path: path.join(__dirname, "./.env") });
 require("dotenv").config();
 
 class CrudServer {
@@ -10,7 +10,7 @@ class CrudServer {
     this.initServer();
     this.initMiddlewares();
     this.initRouters();
-    // this.initErrorHandling();
+    this.initErrorHandling();
     this.startListening();
   }
 
@@ -26,15 +26,15 @@ class CrudServer {
     this.app.use("/contacts", contactsRouter);
   }
 
-  // initErrorHandling() {
-  //   this.app.use((err, req, res, next) => {
-  //     const statusCode = err.status || 500;
-  //     return res.status(statusCode).send(err.message);
-  //   });
-  // }
+  initErrorHandling() {
+    this.app.use((err, req, res, next) => {
+      const statusCode = err.status || 500;
+      return res.status(statusCode).send(err.message);
+    });
+  }
 
   startListening() {
-    this.app.listen(3000, () => {
+    this.app.listen(process.env.PORT, () => {
       console.log("Server started listening on port", process.env.PORT);
     });
   }

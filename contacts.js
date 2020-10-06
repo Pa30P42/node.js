@@ -31,7 +31,7 @@ async function removeContact(contactId) {
   }
 }
 
-async function addContact(name, email, phone) {
+async function addContact({ name, email, phone }) {
   try {
     const contactsList = await listContacts();
     const id = uuidv4();
@@ -40,7 +40,7 @@ async function addContact(name, email, phone) {
       contactsPath,
       JSON.stringify([...contactsList, newContact])
     );
-    console.log(newContact);
+    return newContact;
   } catch (err) {
     console.log(err);
   }
