@@ -24,4 +24,19 @@ contactsRouter.post(
   ContactsController.addContacts
 );
 
+//PATCH
+const changedContactSchema = Joi.object({
+  name: Joi.string(),
+  email: Joi.string().email(),
+  phone: Joi.string(),
+});
+contactsRouter.patch(
+  "/:id",
+  validate(changedContactSchema),
+  ContactsController.changeContact
+);
+
+// DELETE
+contactsRouter.delete("/:id", ContactsController.deleteContact);
+
 module.exports = contactsRouter;

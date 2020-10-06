@@ -26,6 +26,32 @@ exports.addContacts = async (req, res, next) => {
   res.status(201).send(newContact);
 };
 
+exports.changeContact = async (req, res, next) => {
+  const { id } = req.params;
+
+  const contact = await contacts.getContactById(id);
+
+  if (!contact) {
+    return res.status(404).send("Contact not found");
+  }
+
+  const changedContact = await contacts.updateContact(id, req.body);
+
+  return res.status(200).send(changedContact);
+};
+
+exports.deleteContact = async (req, res, next) => {
+  const { id } = req.params;
+
+  const contact = await contacts.getContactById(id);
+
+  if (!contact) {
+    return res.status(404).send("Contact not found");
+  }
+  const deletedContact = await contacts.removeContact(id);
+
+  return res.status(204).send("Deleted Successifully");
+};
 // module.exports = class ContactsController {
 //  async static getContacts(req, res, next) {
 

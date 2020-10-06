@@ -47,9 +47,27 @@ async function addContact({ name, email, phone }) {
   // ...твой код, uuidv4
 }
 
+async function updateContact(id, contactParams) {
+  const contactsList = await listContacts();
+  const contactIndex = contactsList.findIndex((contact) => contact.id === id);
+  if (contactIndex === -1) {
+    return;
+  }
+
+  contactsList[contactIndex] = {
+    ...contactsList[contactIndex],
+    ...contactParams,
+  };
+
+  await fsPromise.writeFile(contactsPath, JSON.stringify([...contactsList]));
+
+  return contactsList[contactIndex];
+}
+
 module.exports = {
   listContacts,
   getContactById,
   removeContact,
   addContact,
+  updateContact,
 };

@@ -1,6 +1,7 @@
 const express = require("express");
 const path = require("path");
 const cors = require("cors");
+const morgan = require("morgan");
 const contactsRouter = require("../contacts/contacts.routers");
 // require("dotenv").config({ path: path.join(__dirname, "./.env") });
 require("dotenv").config();
@@ -20,6 +21,7 @@ class CrudServer {
   initMiddlewares() {
     this.app.use(express.json());
     this.app.use(cors({ origin: "http://localhost:3000" }));
+    this.app.use(morgan("combined"));
   }
 
   initRouters() {
