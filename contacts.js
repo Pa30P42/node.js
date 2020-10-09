@@ -16,6 +16,7 @@ async function getContactById(contactId) {
     return contactsList.find((contact) => contact.id === contactId);
   } catch (err) {
     console.log(err);
+    process.exit(1);
   }
 }
 
@@ -28,6 +29,7 @@ async function removeContact(contactId) {
     await fsPromise.writeFile(contactsPath, JSON.stringify(filteredList));
   } catch (err) {
     console.log(err);
+    process.exit(1);
   }
 }
 
@@ -43,25 +45,31 @@ async function addContact({ name, email, phone }) {
     return newContact;
   } catch (err) {
     console.log(err);
+    process.exit(1);
   }
   // ...твой код, uuidv4
 }
 
 async function updateContact(id, contactParams) {
-  const contactsList = await listContacts();
-  const contactIndex = contactsList.findIndex((contact) => contact.id === id);
-  if (contactIndex === -1) {
-    return;
+  try {
+    const contactsList = await listContacts();
+    const contactIndex = contactsList.findIndex((contact) => contact.id === id);
+    if (contactIndex === -1) {
+      return;
+    }
+
+    contactsList[contactIndex] = {
+      ...contactsList[contactIndex],
+      ...contactParams,
+    };
+
+    await fsPromise.writeFile(contactsPath, JSON.stringify([...contactsList]));
+
+    return contactsList[contactIndex];
+  } catch (err) {
+    console.log(err);
+    process.exit(1);
   }
-
-  contactsList[contactIndex] = {
-    ...contactsList[contactIndex],
-    ...contactParams,
-  };
-
-  await fsPromise.writeFile(contactsPath, JSON.stringify([...contactsList]));
-
-  return contactsList[contactIndex];
 }
 
 module.exports = {
