@@ -1,8 +1,9 @@
 const { v4: uuidv4 } = require("uuid");
 const fs = require("fs");
 const path = require("path");
+const Joi = require("joi");
 
-const contactsPath = path.join(__dirname, "./db/contacts.json");
+const contactsPath = path.join(__dirname, "../../db/contacts.json");
 
 const { promises: fsPromise } = fs;
 
