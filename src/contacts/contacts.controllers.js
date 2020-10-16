@@ -1,8 +1,10 @@
 const contacts = require("./contacts");
+const UserModel = require("./models");
 
 exports.getContacts = async (req, res, next) => {
   try {
-    res.status(200).send(await contacts.listContacts());
+    const listContacts = await UserModel.find();
+    res.status(200).json(listContacts);
   } catch (err) {
     next(err);
   }
@@ -12,7 +14,7 @@ exports.getContactsById = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const contact = await contacts.getContactById(id);
+    const contact = await UserModel.findById(id);
 
     if (!contact) {
       return res.status(404).json({ message: "Contact not found" });
@@ -26,7 +28,7 @@ exports.getContactsById = async (req, res, next) => {
 
 exports.addContacts = async (req, res, next) => {
   try {
-    const newContact = await contacts.addContact(req.body);
+    const newContact = await UserModel.create(req.body);
 
     res.status(201).send(newContact);
   } catch (err) {
@@ -38,7 +40,7 @@ exports.changeContact = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const contact = await contacts.getContactById(id);
+    const contact = await UserModel.findContactByIdAndUpdate(id, req.body);
 
     if (!contact) {
       return res.status(404).json({ message: "Contact not found" });
@@ -56,12 +58,12 @@ exports.deleteContact = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const contact = await contacts.getContactById(id);
+    const contact = await UserModel.findByIdAndDelete(id);
 
     if (!contact) {
       return res.status(404).json({ message: "Contact not found" });
     }
-    const deletedContact = await contacts.removeContact(id);
+    console.log(`Contact with id: ${id} deleted`);
 
     return res.status(204).send();
   } catch (err) {
