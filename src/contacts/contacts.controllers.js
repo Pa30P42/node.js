@@ -42,16 +42,19 @@ exports.addContacts = async (req, res, next) => {
 exports.changeContact = async (req, res, next) => {
   try {
     const { id } = req.params;
+    let contact = "";
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      contact = await UserModel.findContactByIdAndUpdate(id, req.body);
+      if (!contact) {
+        return res
+          .status(404)
+          .json({ message: "impossible to change contact" });
+      }
 
-    const contact = await UserModel.findContactByIdAndUpdate(id, req.body);
-
-    if (!contact) {
-      return res.status(404).json({ message: "Contact not found" });
+      return res.status(200).send(contact);
     }
 
-    const changedContact = await contacts.updateContact(id, req.body);
-
-    return res.status(200).send(changedContact);
+    return res.status(404).send("wrong contact id");
   } catch (err) {
     next(err);
   }
@@ -60,15 +63,15 @@ exports.changeContact = async (req, res, next) => {
 exports.deleteContact = async (req, res, next) => {
   try {
     const { id } = req.params;
-
-    const contact = await UserModel.findByIdAndDelete(id);
-
-    if (!contact) {
-      return res.status(404).json({ message: "Contact not found" });
+    let contact = "";
+    if (mongoose.Types.ObjectId.isValid(id)) {
+      contact = await UserModel.findByIdAndDelete(id);
+      if (!contact) {
+        return res.status(404).json({ message: "Cannot delete contact" });
+      }
+      return res.status(204).send();
     }
-    console.log(`Contact with id: ${id} deleted`);
-
-    return res.status(204).send();
+    return res.status(404).send("wrong contact id");
   } catch (err) {
     next(err);
   }
