@@ -42,12 +42,10 @@ async function addContact(name, email, phone) {
       contactsPath,
       JSON.stringify([...contactsList, newContact])
     );
-    console.log(newContact);
   } catch (err) {
     console.log(err);
     process.exit(1);
   }
-  // ...твой код, uuidv4
 }
 
 module.exports = {
