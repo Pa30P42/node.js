@@ -3,7 +3,7 @@ const path = require("path");
 const cors = require("cors");
 const morgan = require("morgan");
 const contactsRouter = require("../contacts/contacts.routers");
-// require("dotenv").config({ path: path.join(__dirname, "./.env") });
+const AppError = require("../helpers/errApp");
 require("dotenv").config();
 
 class CrudServer {
@@ -29,15 +29,12 @@ class CrudServer {
   }
 
   initErrorHandling() {
+    this.app.all("*", (req, res, next) => {
+      next(new AppError(`Can't fint ${req.originalUrl}`, 404));
+    });
     this.app.use((err, req, res, next) => {
       const statusCode = err.status || 500;
       return res.status(statusCode).send(err.message);
-    });
-  }
-
-  startListening() {
-    this.app.listen(process.env.PORT, () => {
-      console.log("Server started listening on port", process.env.PORT);
     });
   }
 }
