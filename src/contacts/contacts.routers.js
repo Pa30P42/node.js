@@ -2,13 +2,14 @@ const express = require("express");
 const ContactsController = require("./contacts.controllers");
 const Joi = require("joi");
 const { validate } = require("../helpers/validate");
+const { errCatch } = require("../helpers/ErrCatch");
 
 const contactsRouter = express.Router();
 
 // GET
 
-contactsRouter.get("/", ContactsController.getContacts);
-contactsRouter.get("/:id", ContactsController.getContactsById);
+contactsRouter.get("/", errCatch(ContactsController.getContacts));
+contactsRouter.get("/:id", errCatch(ContactsController.getContactsById));
 
 // POST
 
@@ -21,7 +22,7 @@ const createUserSchema = Joi.object({
 contactsRouter.post(
   "/",
   validate(createUserSchema),
-  ContactsController.addContacts
+  errCatch(ContactsController.addContacts)
 );
 
 //PATCH
@@ -33,10 +34,10 @@ const changedContactSchema = Joi.object({
 contactsRouter.patch(
   "/:id",
   validate(changedContactSchema),
-  ContactsController.changeContact
+  errCatch(ContactsController.changeContact)
 );
 
 // DELETE
-contactsRouter.delete("/:id", ContactsController.deleteContact);
+contactsRouter.delete("/:id", errCatch(ContactsController.deleteContact));
 
 module.exports = contactsRouter;

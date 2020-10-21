@@ -1,11 +1,11 @@
 const express = require("express");
-const path = require("path");
 const cors = require("cors");
 const morgan = require("morgan");
 const contactsRouter = require("../contacts/contacts.routers");
-// require("dotenv").config({ path: path.join(__dirname, "./.env") });
 require("dotenv").config();
 const mongoose = require("mongoose");
+const errorController = require("../helpers/errorController");
+const AppError = require("../helpers/AppError");
 
 class CrudServer {
   async start() {
@@ -35,6 +35,8 @@ class CrudServer {
       await mongoose.connect(process.env.MONGO_DB_URL, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
+        useFindAndModify: true,
+        useCreateIndex: true,
       });
       console.log("Database has been started");
     } catch (error) {
@@ -44,10 +46,10 @@ class CrudServer {
   }
 
   initErrorHandling() {
-    this.app.use((err, req, res, next) => {
-      const statusCode = err.status || 500;
-      return res.status(statusCode).send(err.message);
+    this.app.all("*", (req, res, next) => {
+      next(new AppError(`Can't find ${req.originalUrl}`, 404));
     });
+    this.app.use(errorController);
   }
 
   startListening() {
