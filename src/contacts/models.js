@@ -16,7 +16,8 @@ async function getContactById(contactId) {
     const contactsList = await listContacts();
     return contactsList.find((contact) => contact.id === contactId);
   } catch (err) {
-    console.log(err);
+    console.log(err.message);
+    throw new AppError(err);
   }
 }
 
@@ -29,6 +30,7 @@ async function removeContact(contactId) {
     await fsPromise.writeFile(contactsPath, JSON.stringify(filteredList));
   } catch (err) {
     console.log(err);
+    throw new AppError(err);
   }
 }
 
@@ -44,6 +46,7 @@ async function addContact({ name, email, phone }) {
     return newContact;
   } catch (err) {
     console.log(err);
+    throw new AppError(err);
   }
 }
 
@@ -65,6 +68,7 @@ async function updateContact(id, contactParams) {
     return contactsList[contactIndex];
   } catch (err) {
     console.log(err);
+    throw new AppError(err);
   }
 }
 
