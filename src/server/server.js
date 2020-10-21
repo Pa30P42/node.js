@@ -4,6 +4,7 @@ const cors = require("cors");
 const morgan = require("morgan");
 const contactsRouter = require("../contacts/contacts.routers");
 const AppError = require("../helpers/errApp");
+const errorController = require("../helpers/errorController");
 require("dotenv").config();
 
 class CrudServer {
@@ -32,9 +33,12 @@ class CrudServer {
     this.app.all("*", (req, res, next) => {
       next(new AppError(`Can't fint ${req.originalUrl}`, 404));
     });
-    this.app.use((err, req, res, next) => {
-      const statusCode = err.status || 500;
-      return res.status(statusCode).send(err.message);
+    this.app.use(errorController);
+  }
+
+  startListening() {
+    this.app.listen(process.env.PORT, () => {
+      console.log("Server started listening on port", process.env.PORT);
     });
   }
 }
