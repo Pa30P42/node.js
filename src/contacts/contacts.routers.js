@@ -13,7 +13,7 @@ contactsRouter.get("/:id", errCatch(ContactsController.getContactsById));
 
 // POST
 
-const createUserSchema = Joi.object({
+const createContactSchema = Joi.object({
   name: Joi.string().required(),
   email: Joi.string().email().required(),
   phone: Joi.string().required(),
@@ -21,7 +21,7 @@ const createUserSchema = Joi.object({
 
 contactsRouter.post(
   "/",
-  validate(createUserSchema),
+  validate(createContactSchema),
   errCatch(ContactsController.addContacts)
 );
 

@@ -1,13 +1,13 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-const userScheme = new Schema({
+const contactScheme = new Schema({
   name: { type: String, required: true, default: "NoName" },
   email: { type: String, required: true, unique: true },
   phone: { type: String, required: true },
 });
 
-userScheme.statics.findContactByIdAndUpdate = findContactByIdAndUpdate;
+contactScheme.statics.findContactByIdAndUpdate = findContactByIdAndUpdate;
 
 async function findContactByIdAndUpdate(contactId, updateParams) {
   return this.findByIdAndUpdate(
@@ -21,5 +21,5 @@ async function findContactByIdAndUpdate(contactId, updateParams) {
   );
 }
 
-const UserModel = mongoose.model("Contact", userScheme);
-module.exports = UserModel;
+const ContactModel = mongoose.model("Contact", contactScheme);
+module.exports = ContactModel;

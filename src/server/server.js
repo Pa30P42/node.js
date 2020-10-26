@@ -2,10 +2,13 @@ const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
 const contactsRouter = require("../contacts/contacts.routers");
+const cookieParser = require("cookie-parser");
 require("dotenv").config();
 const mongoose = require("mongoose");
 const errorController = require("../helpers/errorController");
 const AppError = require("../helpers/AppError");
+const authRouter = require("../auth/auth.routers");
+const userRouter = require("../users/users.router");
 
 class CrudServer {
   async start() {
@@ -24,10 +27,13 @@ class CrudServer {
     this.app.use(express.json());
     this.app.use(cors({ origin: "http://localhost:3000" }));
     this.app.use(morgan("combined"));
+    this.app.use(cookieParser());
   }
 
   initRouters() {
-    this.app.use("/contacts", contactsRouter);
+    this.app.use("/api/contacts", contactsRouter);
+    this.app.use("/api/auth", authRouter);
+    this.app.use("/api/users", userRouter);
   }
 
   async initDataBase() {
@@ -47,7 +53,7 @@ class CrudServer {
 
   initErrorHandling() {
     this.app.all("*", (req, res, next) => {
-      next(new AppError(`Can't find ${req.originalUrl}`, 404));
+      return next(new AppError(`Can't find ${req.originalUrl}`, 404));
     });
     this.app.use(errorController);
   }

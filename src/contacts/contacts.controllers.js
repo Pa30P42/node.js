@@ -1,8 +1,8 @@
-const UserModel = require("./models");
+const ContactModel = require("./models");
 const mongoose = require("mongoose");
 
 exports.getContacts = async (req, res, next) => {
-  const contactsList = await UserModel.find();
+  const contactsList = await ContactModel.find();
 
   res.status(200).json({
     status: "success",
@@ -14,7 +14,7 @@ exports.getContactsById = async (req, res, next) => {
   const { id } = req.params;
   let contact = "";
   if (mongoose.Types.ObjectId.isValid(id)) {
-    contact = await UserModel.findById(id);
+    contact = await ContactModel.findById(id);
     if (!contact) {
       return next(new AppError(`Contact not found`, 404));
     }
@@ -31,7 +31,7 @@ exports.getContactsById = async (req, res, next) => {
 };
 
 exports.addContacts = async (req, res, next) => {
-  const newContact = await UserModel.create(req.body);
+  const newContact = await ContactModel.create(req.body);
 
   res.status(201).json({
     status: "success",
@@ -43,7 +43,7 @@ exports.changeContact = async (req, res, next) => {
   const { id } = req.params;
   let contact = "";
   if (mongoose.Types.ObjectId.isValid(id)) {
-    contact = await UserModel.findContactByIdAndUpdate(id, req.body);
+    contact = await ContactModel.findContactByIdAndUpdate(id, req.body);
     if (!contact) {
       return next(new AppError(`Contact not found`, 404));
     }
@@ -64,7 +64,7 @@ exports.deleteContact = async (req, res, next) => {
   const { id } = req.params;
   let contact = "";
   if (mongoose.Types.ObjectId.isValid(id)) {
-    contact = await UserModel.findByIdAndDelete(id);
+    contact = await ContactModel.findByIdAndDelete(id);
     if (!contact) {
       return next(new AppError(`Contact not found`, 404));
     }
