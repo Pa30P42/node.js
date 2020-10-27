@@ -47,8 +47,6 @@ exports.loginUser = async (req, res, next) => {
     expiresIn: 2 * 24 * 60 * 60,
   });
 
-  // res.cookie("token", token, { httpOnly: true });
-
   res.status(200).json({
     status: "sucess",
     loginUser: {
@@ -58,4 +56,12 @@ exports.loginUser = async (req, res, next) => {
       subscription: existUser.subscription,
     },
   });
+};
+
+exports.logout = async (req, res, next) => {
+  const loggedUser = req.user;
+
+  await UserModel.findByIdAndUpdate(loggedUser._id, { token: "" });
+  req.user = null;
+  res.status(204).end();
 };

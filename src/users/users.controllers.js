@@ -1,22 +1,30 @@
+const UserModel = require("../auth/user.model");
+const AppError = require("../helpers/AppError");
+
 exports.getCurrentUser = (req, res, next) => {
-  res.status(200).json({
-    status: "sucess",
-    user: {
-      email: req.user.email,
-      subscription: req.user.subscription,
-      id: req.user._id,
-    },
-  });
+  try {
+    res.status(200).json({
+      status: "sucess",
+      user: {
+        email: req.user.email,
+        subscription: req.user.subscription,
+        id: req.user._id,
+      },
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
 };
 
-// const getCurrentUserController = catchAsync(async (req, res, next) => {
-//   const { id: userId } = req.userInfo;
-//   const currentUser = await UserDB.findUserById(userId);
-//   if (currentUser) {
-//     return res.json({
-//       email: currentUser.email,
-//       subscription: currentUser.subscription,
-//     });
-//   }
-//   res.status(401).send({ message: "Not authorized" });
-// });
+exports.deleteUser = async (req, res, next) => {
+  const { id } = req.params;
+
+  const user = await UserModel.findById(id);
+
+  if (!user) {
+    return next(new AppError("User not found", 404));
+  }
+  await UserModel.findByIdAndDelete(id);
+
+  return res.status(204).end();
+};

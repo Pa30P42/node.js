@@ -9,6 +9,7 @@ const errorController = require("../helpers/errorController");
 const AppError = require("../helpers/AppError");
 const authRouter = require("../auth/auth.routers");
 const userRouter = require("../users/users.router");
+const router = require("../router");
 
 class CrudServer {
   async start() {
@@ -31,9 +32,7 @@ class CrudServer {
   }
 
   initRouters() {
-    this.app.use("/api/contacts", contactsRouter);
-    this.app.use("/api/auth", authRouter);
-    this.app.use("/api/users", userRouter);
+    this.app.use("/api/", router);
   }
 
   async initDataBase() {
