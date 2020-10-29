@@ -28,3 +28,23 @@ exports.deleteUser = async (req, res, next) => {
 
   return res.status(204).end();
 };
+
+exports.updateUserInfo = async (req, res, next) => {
+  const { user } = req;
+  const { file } = req;
+
+  const newImagePath = `http://localhost:3000/images/${file.filename}`;
+
+  const updatedImage = await UserModel.findByIdAndUpdate(
+    user._id,
+    {
+      avatarURL: newImagePath,
+    },
+    { new: true }
+  );
+
+  res.status(200).json({
+    status: "sucess",
+    avatarURL: updatedImage.avatarURL,
+  });
+};

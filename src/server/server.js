@@ -26,6 +26,7 @@ class CrudServer {
   }
   initMiddlewares() {
     this.app.use(express.json());
+    this.app.use(express.static("public"));
     this.app.use(cors({ origin: "http://localhost:3000" }));
     this.app.use(morgan("combined"));
     this.app.use(cookieParser());
