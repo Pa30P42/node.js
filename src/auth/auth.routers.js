@@ -29,4 +29,9 @@ authRouter.post(
   errCatch(AuthController.logout)
 );
 
+authRouter.get(
+  "/verify/:verificationToken",
+  errCatch(AuthController.checkVerification)
+);
+
 module.exports = authRouter;

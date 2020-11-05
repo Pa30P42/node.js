@@ -3,7 +3,8 @@ const UserModel = require("../auth/user.model");
 const AppError = require("../helpers/AppError");
 const jwt = require("jsonwebtoken");
 const { generateAvatar } = require("../helpers/avatarCreator");
-
+const sgMail = require("@sendgrid/mail");
+const { v4: uuidv4 } = require("uuid");
 require("dotenv").config();
 
 exports.createNewUser = async (req, res, next) => {
@@ -20,12 +21,37 @@ exports.createNewUser = async (req, res, next) => {
 
   const avatarName = await generateAvatar();
   const avatarPath = `http://localhost:${process.env.PORT}/images/${avatarName}`;
+  const verificationToken = uuidv4();
+  console.log("verificationToken", verificationToken);
 
   const newUser = await UserModel.create({
     email,
     password: passwordHash,
     avatarURL: avatarPath,
+    verificationToken,
   });
+
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+  const msg = {
+    to: email,
+    from: process.env.SENDGRID_SENDER,
+    subject: "HM email Node.js",
+    text: "Verification test",
+    html: `<p>For verify your account, please follow this <a href='http://localhost:3000/api/auth/verify/${verificationToken}'>link</a></p> `,
+  };
+  console.log(msg);
+
+  // sgMail.send(msg);
+  await sgMail
+    .send(msg)
+    .then(() => {
+      console.log("Email sent");
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+
   res.status(201).json({
     status: "sucess",
     createdUser: {
@@ -69,4 +95,19 @@ exports.logout = async (req, res, next) => {
   await UserModel.findByIdAndUpdate(loggedUser._id, { token: "" });
   req.user = null;
   res.status(204).end();
+};
+
+exports.checkVerification = async (req, res, next) => {
+  const { verificationToken } = req.params;
+
+  const verifiedUser = await UserModel.findOneAndUpdate(
+    { verificationToken },
+    {
+      verificationToken: null,
+    }
+  );
+  if (!verifiedUser) {
+    return next(new AppError("User not found", 404));
+  }
+  return res.status(200).send();
 };
